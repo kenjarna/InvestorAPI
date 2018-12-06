@@ -12,31 +12,17 @@ from json import dumps
 
 Base = declarative_base()
 
-class Bucket(Base):
-   __tablename__ = 'buckets'
+class Stock(Base):
+   __tablename__ = 'stocks'
    # TODO Will need to add the fields for the Bucket class here
-   id = Column(String, nullable=False,primary_key=True)
-   description = Column(String)
-   passwordHash= Column(String, nullable=False)
-
-   shortcuts = relationship("Shortcut",back_populates="bucket")
-   def __repr__(self):
-      return "Shortcut<%s %s %s>" % (self.id,self.description,self.passwordHash)
-
-
-class Shortcut(Base):
-   __tablename__ = 'shortcuts'
-   # TODO Will need to add the fields for the Shortcut class here
-
-   linkHash = Column(String,nullable=False,primary_key=True)
-   bucketId = Column(String,ForeignKey('buckets.id',ondelete="CASCADE"),nullable=False,primary_key=True)
-   link = Column(String, nullable=False)
-   description = Column(String)
-
-   bucket = relationship("Bucket", back_populates='shortcuts')
+   ticker = Column(String(6), nullable=False,primary_key=True)
+   price = Column(Integer, nullable=False)
+   close= Column(Integer, nullable=False)
+   lastUpdate = Column(DateTime(), default = datetime.now(), nullable=False)
 
    def __repr__(self):
-      return "Shortcut<%s %s %s %s>" % (self.linkHash,self.bucketId,self.link,self.description)
+      return "Stock<%s %s %s %s>" % (self.ticker,self.price,self.close, self.lastUpdate)
+
 
 # Represents the database and our interaction with it
 class Db:
@@ -56,7 +42,7 @@ class Db:
    def rollback(self):
       self.session.rollback()
 
-   # TODO Must implement the following methods
+
    def getBuckets(self):
       return self.session.query(Bucket).all()
 
