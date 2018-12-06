@@ -7,6 +7,7 @@
 from flask import Flask, request, make_response, json, url_for, abort
 from db import Db   # See db.py
 import utils
+from iexfinance import Stock #the API used to fetch stock data
 
 app = Flask(__name__)
 db = Db()
@@ -32,5 +33,5 @@ def client_error(e):
    return make_json_response({ 'error': e.description }, 400)
 
 @app.route('/', methods = ['GET'])
-def bucket_list():
+def stock():
 	pass
