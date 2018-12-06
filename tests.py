@@ -10,10 +10,24 @@ db.addStock(ticker='TSLA')
 assert(len(db.getStocks()) == 1)
 assert(db.getStock('TSLA').ticker == 'TSLA')
 assert(db.getStock('TsLA') is None)
+
 #Get all stocks in DB
 db.addStock(ticker='MSFT')
 assert(len(db.getStocks()) == 2)
 assert(db.getStock('TSLA') is not None)
 assert(db.getStock('MSFT') != db.getStock('TSLA'))
-print(db.getStocks())
+
+#Test delete stock
+db.deleteStock(db.getStock('TSLA'))
+assert(len(db.getStocks()) == 1)
+assert(db.getStock('MSFT') is not None)
+assert(db.getStock('TSLA') is None)
+
+#Test delete all stocks
+db.addStock(ticker='TSLA')
+db.addStock(ticker='AAPL')
+assert(len(db.getStocks()) == 3)
+db.deleteAllStocks()
+assert(len(db.getStocks()) == 0)
+
 print("################ DB TESTS DONE  ###################")
