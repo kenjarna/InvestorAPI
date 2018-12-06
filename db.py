@@ -19,11 +19,12 @@ class Stock(Base):
    # TODO Will need to add the fields for the Bucket class here
    ticker = Column(String(6), nullable=False,primary_key=True)
    price = Column(Integer, nullable=False)
-   close= Column(Integer, nullable=False)
+   openPrice = Column(Integer, nullable=False)
+   close = Column(Integer, nullable=False)
    lastUpdate = Column(DateTime(), default = datetime.now())
 
    def __repr__(self):
-      return "Stock<%s %s %s %s>" % (self.ticker,self.price,self.close, self.lastUpdate)
+      return "Stock<%s %s %s %s %s>" % (self.ticker,self.price,self.openPrice,self.close, self.lastUpdate)
 
 
 # Represents the database and our interaction with it
@@ -54,7 +55,8 @@ class Db:
 
    def addStock(self, ticker):
       stock = Stock(ticker=ticker,
-                    price = st(ticker).get_price(), 
+                    price = st(ticker).get_price(),
+                    openPrice = st(ticker).get_open(), 
                     close = st(ticker).get_close())
       self.session.add(stock)
       return stock
