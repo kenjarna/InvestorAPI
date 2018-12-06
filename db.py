@@ -10,6 +10,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from json import dumps
 from iexfinance import Stock as st #API to fetch stock data
+from datetime import datetime, timedelta
 
 Base = declarative_base()
 
@@ -43,7 +44,7 @@ class Db:
    def rollback(self):
       self.session.rollback()
 
-   def getStock(self):
+   def getStocks(self):
       return self.session.query(Stock).all()
 
    def getStock(self, ticker):

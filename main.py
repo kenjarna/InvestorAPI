@@ -6,7 +6,6 @@
 
 from flask import Flask, request, make_response, json, url_for, abort
 from db import Db   # See db.py
-import utils
 from iexfinance import Stock #the API used to fetch stock data
 
 app = Flask(__name__)
