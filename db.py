@@ -29,35 +29,41 @@ class Stock(Base):
 
 # Represents the database and our interaction with it
 class Db:
-   def __init__(self):
-      engineName = 'sqlite:///test.db'   # Uses in-memory database
-      self.engine = create_engine(engineName)
-      self.metadata = Base.metadata
-      self.metadata.bind = self.engine
-      self.metadata.drop_all(bind=self.engine)
-      self.metadata.create_all(bind=self.engine)
-      Session = sessionmaker(bind=self.engine)
-      self.session = Session()
+    def __init__(self):
+        engineName = 'sqlite:///test.db'   # Uses in-memory database
+        self.engine = create_engine(engineName)
+        self.metadata = Base.metadata
+        self.metadata.bind = self.engine
+        self.metadata.drop_all(bind=self.engine)
+        self.metadata.create_all(bind=self.engine)
+        Session = sessionmaker(bind=self.engine)
+        self.session = Session()
 
-   def commit(self):
-      self.session.commit()
+    def commit(self):
+        self.session.commit()
 
-   def rollback(self):
-      self.session.rollback()
+    def rollback(self):
+        self.session.rollback()
 
-   def getStocks(self):
-      return self.session.query(Stock).all()
+    def getStocks(self):
+        return self.session.query(Stock).all()
 
-   def getStock(self, ticker):
-      return self.session.query(Stock)\
-               .filter_by(ticker=ticker)\
-               .one_or_none()
+    def getStock(self, ticker):
+        return self.session.query(Stock)\
+                 .filter_by(ticker=ticker)\
+                 .one_or_none()
 
-   def addStock(self, ticker):
-      stock = Stock(ticker=ticker,
-                    price = st(ticker).get_price(),
-                    openPrice = st(ticker).get_open(), 
-                    close = st(ticker).get_close())
-      self.session.add(stock)
-      return stock
+    def addStock(self, ticker):
+        stock = Stock(ticker=ticker,
+                      price = st(ticker).get_price(),
+                      openPrice = st(ticker).get_open(), 
+                      close = st(ticker).get_close())
+        self.session.add(stock)
+        return stock    
 
+    def deleteStock(self, stock):
+        self.session.delete(stock)
+
+    def deleteAllStocks(self):
+        for stock in self.getStocks():
+            self.session.delete(stock)
