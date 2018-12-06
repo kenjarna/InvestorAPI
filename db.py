@@ -8,9 +8,9 @@
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
-from json import dumps
 from iexfinance import Stock as st #API to fetch stock data
 from datetime import datetime, timedelta
+import json
 
 Base = declarative_base()
 
@@ -58,3 +58,4 @@ class Db:
                     close = st(ticker).get_close())
       self.session.add(stock)
       return stock
+
