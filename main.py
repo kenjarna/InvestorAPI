@@ -32,5 +32,12 @@ def client_error(e):
    return make_json_response({ 'error': e.description }, 400)
 
 @app.route('/', methods = ['GET'])
-def stock():
-	pass
+def stock_list():
+   stocks = db.getStocks()
+   return make_json_response({
+      "buckets": [
+            {"link": url_for('stocks', stockId = stock.id),
+             "description": stock.description}
+         for stock in stocks
+      ]
+      })

@@ -31,3 +31,15 @@ db.deleteAllStocks()
 assert(len(db.getStocks()) == 0)
 
 print("################ DB TESTS DONE  ###################")
+print("################   API TESTS   ###################")
+
+# ADD YOUR API TESTS HERE
+# ADD YOUR API TESTS HERE
+client = app.test_client()
+def get_json(r):
+   return json.loads(r.get_data().decode("utf-8"))
+
+# Testing existing bucket
+r = client.get('/')
+assert(r.status_code == 200)
+contents = get_json(r)
