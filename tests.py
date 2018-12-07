@@ -48,5 +48,8 @@ contents = get_json(r)
 assert("stocks" in contents)
 assert(len(contents["stocks"]) == 1)
 
+assert('TSLA' in contents["stocks"][0]["ticker"])
+
+
 
 print("##############   API TESTS DONE   #################")

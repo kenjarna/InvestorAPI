@@ -44,7 +44,7 @@ def stock_list():
 
 
 @app.route('/<stockTicker>', methods = ['GET'])
-def bucket_contents(stockTicker):
+def stock_contents(stockTicker):
     stockTickerHelper(stockTicker)
     return make_json_response({
         "ticker": stockTicker,
@@ -60,7 +60,7 @@ def make_json_response(content, response = 200, headers = {}):
    return make_response(json.dumps(content), response, headers)
 
 def stockTickerHelper():
-    stock = db.getStock(bucketId)
+    stock = db.getStock(ticker)
     if stock == None:
         abort(404, "Stock not found")
     return stock
