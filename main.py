@@ -42,6 +42,25 @@ def stock_list():
         })
 
 
+
+@app.route('/<stockTicker>', methods = ['GET'])
+def bucket_contents(stockTicker):
+    stockTickerHelper(stockTicker)
+    return make_json_response({
+        "ticker": stockTicker,
+        "price": db.getStock(stockTicker).price,
+        "open": db.getStock(stockTicker).openPrice,
+        "close": db.getStock(stockTicker).close,
+        "last update": db.getStock(stockTicker).lastUpdate
+        })
+
+
 def make_json_response(content, response = 200, headers = {}):
    headers['Content-Type'] = 'application/json'
    return make_response(json.dumps(content), response, headers)
+
+def stockTickerHelper():
+    stock = db.getStock(bucketId)
+    if stock == None:
+        abort(404, "Stock not found")
+    return stock
