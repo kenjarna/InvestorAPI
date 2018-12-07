@@ -33,11 +33,15 @@ def client_error(e):
 
 @app.route('/', methods = ['GET'])
 def stock_list():
-   stocks = db.getStocks()
-   return make_json_response({
-      "buckets": [
-            {"link": url_for('stocks', stockId = stock.id),
-             "description": stock.description}
-         for stock in stocks
-      ]
-      })
+    stocks = db.getStocks()
+    return make_json_response({
+        "stocks": [
+               {"ticker": stock.ticker}
+            for stock in stocks
+        ]
+        })
+
+
+def make_json_response(content, response = 200, headers = {}):
+   headers['Content-Type'] = 'application/json'
+   return make_response(json.dumps(content), response, headers)
