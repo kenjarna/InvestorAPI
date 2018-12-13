@@ -85,8 +85,17 @@ class Db:
                 .filter_by(id=id)\
                 .one_or_none()
 
+    def getCollections(self):
+        return self.session.query(Collection).all()
+
     def addCollection(self, id, description):
         collection = Collection(id=id, description=description)
         self.session.add(collection)
         return collection
 
+    def deleteCollection(self, collection)
+        self.session.delete(collection)
+
+    def deleteAllCollection(self):
+        for collection in self.getCollections():
+            self.session.delete(collection)
