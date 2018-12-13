@@ -1,7 +1,7 @@
 """
-	Developers: Kenny Jarnagin(2019), 
-				Graham Wood(2019)
-				Collin Beauchamp-Umphrey(2019)
+    Developers: Kenny Jarnagin(2019), 
+                Graham Wood(2019)
+                Collin Beauchamp-Umphrey(2019)
 """
 
 from flask import Flask, request, make_response, json, url_for, abort
@@ -44,14 +44,15 @@ def stock_list():
 
 
 @app.route('/<stockTicker>', methods = ['GET'])
-def stock_contents(stockTicker):
+def stock_data(stockTicker):
     stockTickerHelper(stockTicker)
     return make_json_response({
         "ticker": stockTicker,
         "price": db.getStock(stockTicker).price,
         "open": db.getStock(stockTicker).openPrice,
         "close": db.getStock(stockTicker).close,
-        "last update": db.getStock(stockTicker).lastUpdate
+        "last update": db.getStock(stockTicker).lastUpdate,
+        "collection ID": db.getStock(stockTicker).collectionID
         })
 
 
