@@ -74,17 +74,18 @@ client = app.test_client()
 def get_json(r):
    return json.loads(r.get_data().decode("utf-8"))
 db.addStock(ticker = 'TSLA')
+db.addStock(ticker = 'MSFT')
 
 # Testing existing stock
-print("\t Testing existing stock . . .")
+print("\t Testing GET stock_list. . .")
 r = client.get('/')
 assert(r.status_code == 200)
 contents = get_json(r)
 
 assert("stocks" in contents)
-assert(len(contents["stocks"]) == 1)
-
-assert('TSLA' in contents["stocks"][0]["ticker"])
+assert(len(contents["stocks"]) == 2)
+assert(contents["stocks"][0]['TSLA'] is not None)
+assert(contents["stocks"][1]['MSFT'] is not None)
 
 
 

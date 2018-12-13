@@ -35,8 +35,8 @@ def client_error(e):
 def stock_list():
     stocks = db.getStocks()
     return make_json_response({
-        "stocks": [
-               {stock.ticker: {"price": stock.price.
+        "stocks": [{
+                    stock.ticker: {"price": stock.price,
                                "open": stock.openPrice,
                                "close": stock.close,
                                "last update": stock.lastUpdate}}
