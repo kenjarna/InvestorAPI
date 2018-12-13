@@ -65,6 +65,14 @@ def stock_create(stockTicker):
     return make_json_response ({'Good': 'bucket_created'}, 201)
 
 
+@app.route('/<stockTicker>', methods = ['DELETE'])
+def stock_delete(stockTicker):
+    db.deleteStock(db.getBucket(stockTicker))
+    db.commit()
+    return make_json_response({}, 204)
+
+
+
 @app.route('/<collectionID>', methods = ['GET'])
 def collection_data(collectionId):
     collectionIdHelper(collectionId)
