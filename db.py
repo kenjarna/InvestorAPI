@@ -33,7 +33,7 @@ class Collection(Base):
     id = Column(String, nullable=False,primary_key=True)
     description = Column(String)
  
-    stock = relationship("Stock", back_populates='collections')
+    stocks = relationship("Stock", back_populates='collections')
 
     def __repr__(self):
         return "Collection<%s %s>" %(self.id, self.description)
@@ -96,6 +96,6 @@ class Db:
     def deleteCollection(self, collection):
         self.session.delete(collection)
 
-    def deleteAllCollection(self):
+    def deleteAllCollections(self):
         for collection in self.getCollections():
             self.session.delete(collection)
