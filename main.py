@@ -56,12 +56,47 @@ def stock_data(stockTicker):
         })
 
 
+
+@app.route('/', methods = ['GET'])
+def collection_list():
+    collection = db.getCollections()
+    return make_json_response({
+        "collections": [
+                {"id": collection.id,
+                 "description": collection.description}
+            for collection in collections
+        ]
+        })
+
+
+@app.route('/<collectionID>', methods = ['GET'])
+def collection_data(collectionId):
+    collectionIdHelper(collectionId)
+    return make_json_response({
+        "id": collectionId,
+        "description": db.getCollection(collectionId).description,
+        "stocks": [
+                {"ticker": ticker.stock,
+                 "price": price.stock,
+                 "last updated": lastUpdate.stock}
+            for stock in db.getCollection(collectionId).stocks
+        ]
+        })
+
+
+
 def make_json_response(content, response = 200, headers = {}):
    headers['Content-Type'] = 'application/json'
    return make_response(json.dumps(content), response, headers)
 
-def stockTickerHelper():
+def stockTickerHelper(ticker):
     stock = db.getStock(ticker)
     if stock == None:
         abort(404, "Stock not found")
     return stock
+
+def collectionIdHelper(id):
+    collection = db.getCollection(id)
+    if collection == None:
+        abort(404, "Stock not found")
+    return collection
