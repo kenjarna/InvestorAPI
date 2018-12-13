@@ -21,7 +21,7 @@ class Stock(Base):
     openPrice = Column(Integer, nullable=False)
     close = Column(Integer, nullable=False)
     lastUpdate = Column(DateTime(), default = datetime.now())
-    collectionID = Column(String, ForeignKey("collections.id", ondelete="CASCADE"))
+    collectionID = Column(String, ForeignKey("collections.id", ondelete="CASCADE"), default = "None")
 
     collections = relationship("Collection",back_populates="stocks")
 
@@ -65,11 +65,12 @@ class Db:
                  .filter_by(ticker=ticker)\
                  .one_or_none()
 
-    def addStock(self, ticker):
+    def addStock(self, ticker, collectionID):
         stock = Stock(ticker=ticker,
                       price = st(ticker).get_price(),
                       openPrice = st(ticker).get_open(), 
-                      close = st(ticker).get_close())
+                      close = st(ticker).get_close(),
+                      collectionID = collectionID)
         self.session.add(stock)
         return stock    
 

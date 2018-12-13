@@ -54,7 +54,8 @@ def stock_data(stockTicker):
         "price": db.getStock(stockTicker).price,
         "open": db.getStock(stockTicker).openPrice,
         "close": db.getStock(stockTicker).close,
-        "last update": db.getStock(stockTicker).lastUpdate
+        "last update": db.getStock(stockTicker).lastUpdate,
+        "collectionID": db.getStock(stockTicker).collectionID
         })
 
 
@@ -62,7 +63,7 @@ def stock_data(stockTicker):
 def stock_create(stockTicker):
     if db.getStock(stockTicker) is not None:
         abort(403, "Stock already exists")
-    db.addStock(stockTicker)
+    db.addStock(stockTicker,None)
     db.commit()
     return make_json_response ({'Good': 'bucket_created'}, 201)
 
@@ -76,27 +77,27 @@ def stock_delete(stockTicker):
 
 
 @app.route('/<stockTicker>/<collectionID>', methods = ['GET'])
-def collection_data(collectionId):
-    collectionIdHelper(collectionId)
+def collection_data(stockTicker, collectionID):
+    collectionIdHelper(collectionID)
     return make_json_response({
-        "id": collectionId,
-        "description": db.getCollection(collectionId).description
+        "id": collectionID,
+        "description": db.getCollection(collectionID).description
         })
 
 
 @app.route('/<stockTicker>/<collectionID>', methods = ['PUT'])
-def collection_create(collectionId):
-    if db.getCollection(collectionId) is not None:
+def collection_create(stockTicker,collectionID):
+    if db.getCollection(collectionID) is not None:
         abort(403, "Collection already exists")
     description = descriptionHelper()
-    db.addCollection(collectionId, description)
+    db.addCollection(collectionID, description)
     db.commit()
     return make_json_response({'Good':"collection created"}, 201)
 
 
 @app.route('/<stockTicker>/<collectionID>', methods = ['DELETE'])
-def collection_delete(collectionId):
-    db.deleteCollection(db.getCollection(collectionId))
+def collection_delete(stockTicker,collectionID):
+    db.deleteCollection(db.getCollection(collectionID))
     db.commit()
     return make_json_response({'Good':"collection deleted"}, 204)
 
@@ -115,7 +116,7 @@ def stockTickerHelper(ticker):
 def collectionIdHelper(id):
     collection = db.getCollection(id)
     if collection == None:
-        abort(404, "Stock not found")
+        abort(404, "Stockssssss not found")
     return collection
 
 def descriptionHelper():
