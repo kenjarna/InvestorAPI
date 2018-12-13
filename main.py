@@ -56,17 +56,16 @@ def stock_data(stockTicker):
         })
 
 
-
-@app.route('/', methods = ['GET'])
-def collection_list():
-    collection = db.getCollections()
-    return make_json_response({
-        "collections": [
-                {"id": collection.id,
-                 "description": collection.description}
-            for collection in collections
-        ]
-        })
+@app.route('/<stockTicker>', methods = [PUT])
+def stock_create(stockTicker):
+    buckets = db.getBuckets()
+    bucketAvailableHelper(bucketId)
+    password = passwordConentsHelper()
+    description = descriptionHelper()
+    db.addBucket(id=bucketId, passwordHash = utils.getHash(password), description = description)
+    db.commit()
+    headers = {"Location": url_for('bucket_contents', bucketId = bucketId)}
+    return make_json_response ({'Good': 'bucket_created'}, 201, headers)
 
 
 @app.route('/<collectionID>', methods = ['GET'])
