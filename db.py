@@ -96,6 +96,6 @@ class Db:
     def deleteCollection(self, collection):
         self.session.delete(collection)
 
-    def deleteAllCollection(self):
+    def deleteAllCollections(self):
         for collection in self.getCollections():
             self.session.delete(collection)
