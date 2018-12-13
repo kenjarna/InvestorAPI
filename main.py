@@ -36,7 +36,10 @@ def stock_list():
     stocks = db.getStocks()
     return make_json_response({
         "stocks": [
-               {"ticker": stock.ticker}
+               {stock.ticker: {"price": stock.price.
+                               "open": stock.openPrice,
+                               "close": stock.close,
+                               "last update": stock.lastUpdate}}
             for stock in stocks
         ]
         })
@@ -51,8 +54,7 @@ def stock_data(stockTicker):
         "price": db.getStock(stockTicker).price,
         "open": db.getStock(stockTicker).openPrice,
         "close": db.getStock(stockTicker).close,
-        "last update": db.getStock(stockTicker).lastUpdate,
-        "collection ID": db.getStock(stockTicker).collectionID
+        "last update": db.getStock(stockTicker).lastUpdate
         })
 
 
@@ -73,37 +75,30 @@ def stock_delete(stockTicker):
 
 
 
-@app.route('/<collectionID>', methods = ['GET'])
+@app.route('/<stockTicker>/<collectionID>', methods = ['GET'])
 def collection_data(collectionId):
     collectionIdHelper(collectionId)
     return make_json_response({
         "id": collectionId,
-        "description": db.getCollection(collectionId).description,
-        "stocks": [
-                {"ticker": ticker.stock,
-                 "price": price.stock,
-                 "last updated": lastUpdate.stock}
-            for stock in db.getCollection(collectionId).stocks
-        ]
+        "description": db.getCollection(collectionId).description
         })
 
 
-@app.route('/<collectionID>', methods = ['PUT'])
+@app.route('/<stockTicker>/<collectionID>', methods = ['PUT'])
 def collection_create(collectionId):
     if db.getCollection(collectionId) is not None:
         abort(403, "Collection already exists")
     description = descriptionHelper()
     db.addCollection(collectionId, description)
     db.commit()
-    headers = {"Stocks": url_for('collection_data', collectionId = collectionId)}
-    return make_json_response({'Good':"collection created"}, 201, headers)
+    return make_json_response({'Good':"collection created"}, 201)
 
 
-@app.route('/<collectionID>', methods = ['DELETE'])
+@app.route('/<stockTicker>/<collectionID>', methods = ['DELETE'])
 def collection_delete(collectionId):
     db.deleteCollection(db.getCollection(collectionId))
     db.commit()
-    return make_json_response({}, 204)
+    return make_json_response({'Good':"collection deleted"}, 204)
 
 
 
