@@ -14,14 +14,15 @@ import json
 
 Base = declarative_base()
 
+#The principle class for the API
 class Stock(Base):
     __tablename__ = 'stocks'
-    ticker = Column(String(6), nullable=False,primary_key=True)
-    price = Column(Integer, nullable=False)
-    openPrice = Column(Integer, nullable=False)
-    close = Column(Integer, nullable=False)
-    lastUpdate = Column(DateTime(), default = datetime.now())
-    collectionID = Column(String, ForeignKey("collections.id", ondelete="CASCADE"), default = "None")
+    ticker = Column(String(6), nullable=False,primary_key=True) # A String that is a short form of a company name
+    price = Column(Integer, nullable=False) #An integer for the price of a stock
+    openPrice = Column(Integer, nullable=False) #The price of the stock the morning of the current day
+    close = Column(Integer, nullable=False) #The price of the stock at the end of the last day
+    lastUpdate = Column(DateTime(), default = datetime.now()) #Last time the information has been requested
+    collectionID = Column(String, ForeignKey("collections.id", ondelete="CASCADE"), default = "None") #What collection is the stoc a part of?
 
     collections = relationship("Collection",back_populates="stocks")
 
@@ -30,8 +31,8 @@ class Stock(Base):
 
 class Collection(Base):
     __tablename__ = 'collections'
-    id = Column(String, nullable=False,primary_key=True)
-    description = Column(String)
+    id = Column(String, nullable=False,primary_key=True) #Name of the Collection
+    description = Column(String) #A short description
  
     stocks = relationship("Stock", back_populates='collections')
 
@@ -57,14 +58,17 @@ class Db:
     def rollback(self):
         self.session.rollback()
 
+        #Gets All Stocks in the current db
     def getStocks(self):
         return self.session.query(Stock).all()
 
+    #Gets a single stock in the current db
     def getStock(self, ticker):
         return self.session.query(Stock)\
                  .filter_by(ticker=ticker)\
                  .one_or_none()
 
+    #Introduces a new stock to the db, only needs a ticker and a collectionID(can be None)
     def addStock(self, ticker, collectionID):
         stock = Stock(ticker=ticker,
                       price = st(ticker).get_price(),
@@ -74,29 +78,36 @@ class Db:
         self.session.add(stock)
         return stock    
 
+    #Deletes a given stoc from the database
     def deleteStock(self, stock):
         self.session.delete(stock)
 
+        #deletes all stocks from the database. Currently unused
     def deleteAllStocks(self):
         for stock in self.getStocks():
             self.session.delete(stock)
 
+            #Gets an individual collection
     def getCollection(self, id):
         return self.session.query(Collection)\
                 .filter_by(id=id)\
                 .one_or_none()
 
+    #Gets all collections
     def getCollections(self):
         return self.session.query(Collection).all()
 
+    #Introduces a new Collection to the db
     def addCollection(self, id, description):
         collection = Collection(id=id, description=description)
         self.session.add(collection)
         return collection
 
+    #Deletes a collection, given that collection
     def deleteCollection(self, collection):
         self.session.delete(collection)
 
+        #deletes all collections. Currently Unused
     def deleteAllCollections(self):
         for collection in self.getCollections():
             self.session.delete(collection)
