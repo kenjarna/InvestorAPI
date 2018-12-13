@@ -74,18 +74,49 @@ client = app.test_client()
 def get_json(r):
    return json.loads(r.get_data().decode("utf-8"))
 db.addStock(ticker = 'TSLA')
+db.addStock(ticker = 'MSFT')
 
 # Testing existing stock
-print("\t Testing existing stock . . .")
+print("\t Testing GET stock list . . .")
 r = client.get('/')
 assert(r.status_code == 200)
 contents = get_json(r)
 
 assert("stocks" in contents)
-assert(len(contents["stocks"]) == 1)
-
+assert(len(contents["stocks"]) == 2)
 assert('TSLA' in contents["stocks"][0]["ticker"])
+assert('MSFT' in contents["stocks"][1]["ticker"])
 
+#Get a specific collection in DB
+print("\t Testing GET stock ticker . . .")
+r = client.get('/MSFT')
+contents = get_json(r)
+assert(r.status_code == 200)
+assert('MSFT' in contents["ticker"])
+
+r = client.get('/TSLA')
+contents = get_json(r)
+assert(r.status_code == 200)
+assert('TSLA' in contents["ticker"])
+
+#Create new stock
+print("\t Testing PUT stock create . . .")
+r = client.put('/TSLA')
+assert(r.status_code == 403)
+r = client.put('/MSFT')
+assert(r.status_code == 403)
+r = client.put('/AAPL')
+assert(r.status_code == 201)
+
+#Delete stock
+print("\t Testing DELETE stock delete . . .")
+r = client.delete('/TSLA')
+assert(r.status_code == 204)
+assert(len(db.getStocks()) == 2)
+r = client.get('/MSFT')
+assert(r.status_code == 200)
+r = client.get('/AAPL')
+assert(r.status_code == 200)
 
 
 print("##############   API TESTS DONE   #################")
