@@ -67,7 +67,7 @@ def stock_create(stockTicker):
 
 @app.route('/<stockTicker>', methods = ['DELETE'])
 def stock_delete(stockTicker):
-    db.deleteStock(db.getBucket(stockTicker))
+    db.deleteStock(db.getStock(stockTicker))
     db.commit()
     return make_json_response({}, 204)
 
@@ -88,6 +88,24 @@ def collection_data(collectionId):
         })
 
 
+@app.route('/<collectionID>', methods = ['PUT'])
+def collection_create(collectionId):
+    if db.getCollection(collectionId) is not None:
+        abort(403, "Collection already exists")
+    description = descriptionHelper()
+    db.addCollection(collectionId, description)
+    db.commit()
+    headers = {"Stocks": url_for('collection_data', collectionId = collectionId)}
+    return make_json_response({'Good':"collection created"}, 201, headers)
+
+
+@app.route('/<collectionID>', methods = ['DELETE'])
+def collection_delete(collectionId):
+    db.deleteCollection(db.getCollection(collectionId))
+    db.commit()
+    return make_json_response({}, 204)
+
+
 
 def make_json_response(content, response = 200, headers = {}):
    headers['Content-Type'] = 'application/json'
@@ -104,3 +122,12 @@ def collectionIdHelper(id):
     if collection == None:
         abort(404, "Stock not found")
     return collection
+
+def descriptionHelper():
+   contents = request.get_json()
+   if contents is None:
+      abort(400)
+   if "description" not in contents:
+      description = None
+   else: description = contents["description"]
+   return description
