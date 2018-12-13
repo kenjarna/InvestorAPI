@@ -15,16 +15,27 @@ import json
 Base = declarative_base()
 
 class Stock(Base):
-   __tablename__ = 'stocks'
-   # TODO Will need to add the fields for the Bucket class here
-   ticker = Column(String(6), nullable=False,primary_key=True)
-   price = Column(Integer, nullable=False)
-   openPrice = Column(Integer, nullable=False)
-   close = Column(Integer, nullable=False)
-   lastUpdate = Column(DateTime(), default = datetime.now())
+    __tablename__ = 'stocks'
+    ticker = Column(String(6), nullable=False,primary_key=True)
+    price = Column(Integer, nullable=False)
+    openPrice = Column(Integer, nullable=False)
+    close = Column(Integer, nullable=False)
+    lastUpdate = Column(DateTime(), default = datetime.now())
 
-   def __repr__(self):
-      return "Stock<%s %s %s %s %s>" % (self.ticker,self.price,self.openPrice,self.close, self.lastUpdate)
+    collections = relationship("Collection",back_populates="stock")
+
+    def __repr__(self):
+        return "Stock<%s %s %s %s %s>" % (self.ticker,self.price,self.openPrice,self.close, self.lastUpdate)
+
+class Collection(Base):
+    __tablename__ = 'collections'
+    id = Column(String, nullable=False,primary_key=True)
+    description = Column(String)
+ 
+    stock = relationship("Stock", back_populates='collections')
+
+    def __repr__(self):
+        return "Collection<%s %s>" %(self.id, self.description)
 
 
 # Represents the database and our interaction with it
