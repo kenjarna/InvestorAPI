@@ -93,7 +93,7 @@ class Db:
         self.session.add(collection)
         return collection
 
-    def deleteCollection(self, collection)
+    def deleteCollection(self, collection):
         self.session.delete(collection)
 
     def deleteAllCollection(self):
