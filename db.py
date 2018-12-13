@@ -21,6 +21,7 @@ class Stock(Base):
     openPrice = Column(Integer, nullable=False)
     close = Column(Integer, nullable=False)
     lastUpdate = Column(DateTime(), default = datetime.now())
+    collectionID = Column(String, ForeignKey("collections.id", ondelete="CASCADE"))
 
     collections = relationship("Collection",back_populates="stock")
 
