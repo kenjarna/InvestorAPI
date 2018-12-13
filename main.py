@@ -56,16 +56,13 @@ def stock_data(stockTicker):
         })
 
 
-@app.route('/<stockTicker>', methods = [PUT])
+@app.route('/<stockTicker>', methods = ['PUT'])
 def stock_create(stockTicker):
-    buckets = db.getBuckets()
-    bucketAvailableHelper(bucketId)
-    password = passwordConentsHelper()
-    description = descriptionHelper()
-    db.addBucket(id=bucketId, passwordHash = utils.getHash(password), description = description)
+    if db.getStock(stockTicker) is not None:
+        abort('403', "Stock already exists")
+    db.addStock(stockTicker)
     db.commit()
-    headers = {"Location": url_for('bucket_contents', bucketId = bucketId)}
-    return make_json_response ({'Good': 'bucket_created'}, 201, headers)
+    return make_json_response ({'Good': 'bucket_created'}, 201)
 
 
 @app.route('/<collectionID>', methods = ['GET'])
