@@ -59,7 +59,7 @@ def stock_data(stockTicker):
 @app.route('/<stockTicker>', methods = ['PUT'])
 def stock_create(stockTicker):
     if db.getStock(stockTicker) is not None:
-        abort('403', "Stock already exists")
+        abort(403, "Stock already exists")
     db.addStock(stockTicker)
     db.commit()
     return make_json_response ({'Good': 'bucket_created'}, 201)
