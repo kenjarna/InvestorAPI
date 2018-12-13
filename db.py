@@ -78,3 +78,14 @@ class Db:
     def deleteAllStocks(self):
         for stock in self.getStocks():
             self.session.delete(stock)
+
+    def getCollection(self, id):
+        return self.session.query(Collection)\
+                .filter_by(id=id)\
+                .one_or_none()
+
+    def addCollection(self, id, description):
+        collection = Collection(id=id, description=description)
+        self.session.add(collection)
+        return collection
+
