@@ -23,7 +23,7 @@ class Stock(Base):
     lastUpdate = Column(DateTime(), default = datetime.now())
     collectionID = Column(String, ForeignKey("collections.id", ondelete="CASCADE"))
 
-    collections = relationship("Collection",back_populates="stock")
+    collections = relationship("Collection",back_populates="stocks")
 
     def __repr__(self):
         return "Stock<%s %s %s %s %s>" % (self.ticker,self.price,self.openPrice,self.close, self.lastUpdate)
