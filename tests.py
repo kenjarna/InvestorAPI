@@ -31,3 +31,25 @@ db.deleteAllStocks()
 assert(len(db.getStocks()) == 0)
 
 print("################ DB TESTS DONE  ###################")
+print("################   API TESTS   ###################")
+
+# ADD YOUR API TESTS HERE
+# ADD YOUR API TESTS HERE
+client = app.test_client()
+def get_json(r):
+   return json.loads(r.get_data().decode("utf-8"))
+db.addStock(ticker = 'TSLA')
+
+# Testing existing stock
+r = client.get('/')
+assert(r.status_code == 200)
+contents = get_json(r)
+
+assert("stocks" in contents)
+assert(len(contents["stocks"]) == 1)
+
+assert('TSLA' in contents["stocks"][0]["ticker"])
+
+
+
+print("##############   API TESTS DONE   #################")

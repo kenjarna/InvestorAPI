@@ -32,5 +32,35 @@ def client_error(e):
    return make_json_response({ 'error': e.description }, 400)
 
 @app.route('/', methods = ['GET'])
-def stock():
-	pass
+def stock_list():
+    stocks = db.getStocks()
+    return make_json_response({
+        "stocks": [
+               {"ticker": stock.ticker}
+            for stock in stocks
+        ]
+        })
+
+
+
+@app.route('/<stockTicker>', methods = ['GET'])
+def stock_contents(stockTicker):
+    stockTickerHelper(stockTicker)
+    return make_json_response({
+        "ticker": stockTicker,
+        "price": db.getStock(stockTicker).price,
+        "open": db.getStock(stockTicker).openPrice,
+        "close": db.getStock(stockTicker).close,
+        "last update": db.getStock(stockTicker).lastUpdate
+        })
+
+
+def make_json_response(content, response = 200, headers = {}):
+   headers['Content-Type'] = 'application/json'
+   return make_response(json.dumps(content), response, headers)
+
+def stockTickerHelper():
+    stock = db.getStock(ticker)
+    if stock == None:
+        abort(404, "Stock not found")
+    return stock
